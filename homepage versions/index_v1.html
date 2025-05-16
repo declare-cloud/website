@@ -1,0 +1,461 @@
+<!DOCTYPE html><html lang="en"><head data-llama-id="0">
+<meta charset="utf-8" data-llama-id="1">
+<meta content="width=device-width, initial-scale=1" data-llama-id="2" name="viewport">
+<title data-llama-id="3">Cloud as Code</title>
+<script data-llama-id="4" src="https://cdn.tailwindcss.com"></script>
+<link data-llama-id="5" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+<style data-llama-id="6">
+    html {
+      scroll-behavior: smooth;
+    }
+    @keyframes bounceFade {
+      0%, 100% {
+        transform: translateY(0);
+        opacity: 0.4;
+      }
+      50% {
+        transform: translateY(10px);
+        opacity: 1;
+      }
+    }
+    .animate-bounce-fade {
+      animation: bounceFade 2s infinite ease-in-out;
+    }
+    @keyframes wipeIn {
+      0% {
+        clip-path: inset(0 100% 0 0);
+      }
+      100% {
+        clip-path: inset(0 0 0 0);
+      }
+    }
+    .wipe-animation {
+      animation: wipeIn 1.5s cubic-bezier(0.77, 0, 0.175, 1);
+    }
+  </style>
+</head>
+<body class="bg-[#0F172A] text-[#F1F5F9]" data-llama-id="7" style="cursor: default;">
+<!-- Navigation -->
+<nav class="fixed top-0 left-0 right-0 z-50 bg-[#1E293B] bg-opacity-95 shadow" data-llama-id="8">
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex justify-between items-center h-16" data-llama-id="9">
+<div class="flex items-center space-x-3" data-llama-id="10">
+<i class="fas fa-cloud text-2xl text-[#38BDF8]" data-llama-id="11"></i>
+<span class="font-bold text-xl text-white" data-llama-id="12">Cloud as Code</span>
+</div>
+<div class="hidden md:flex space-x-6 items-center" data-llama-id="13">
+<a class="hover:text-[#38BDF8]" data-llama-id="14" href="#about">About</a>
+<a class="hover:text-[#38BDF8]" data-llama-id="15" href="#pricing">Pricing</a>
+<a class="hover:text-[#38BDF8]" data-llama-id="16" href="#demo">Demo</a>
+<a class="bg-[#38BDF8] text-[#0F172A] px-4 py-2 rounded hover:bg-white transition" data-llama-id="17" href="#get-started">Signup</a>
+</div>
+<div class="md:hidden" data-llama-id="18">
+<button class="text-[#F1F5F9] focus:outline-none" data-llama-id="19" id="mobileMenuButton"><i class="fas fa-bars" data-llama-id="20"></i></button>
+</div>
+</div>
+<!-- Mobile Menu -->
+<div class="md:hidden hidden bg-[#1E293B]" data-llama-id="21" id="mobileMenu">
+<div class="px-2 pt-2 pb-3 space-y-1" data-llama-id="22">
+<a class="block px-3 py-2 hover:text-[#38BDF8]" data-llama-id="23" href="#about">About</a>
+<a class="block px-3 py-2 hover:text-[#38BDF8]" data-llama-id="24" href="#pricing">Pricing</a>
+<a class="block px-3 py-2 hover:text-[#38BDF8]" data-llama-id="25" href="#demo">Demo</a>
+<a class="block bg-[#38BDF8] text-[#0F172A] px-3 py-2 rounded text-center" data-llama-id="26" href="#get-started">Signup</a>
+</div>
+</div>
+</nav>
+<!-- Hero Section -->
+<section class="relative flex items-center justify-center h-screen bg-cover bg-center" data-llama-id="27" id="home" style="background-image: url('https://llamapress-ai-image-uploads.s3.us-west-2.amazonaws.com/eup00b6aewgwk1q73nlx28yxsg9w');">
+<div class="absolute inset-0 bg-black opacity-60" data-llama-id="28"></div>
+<div class="relative z-10 text-center px-4" data-llama-id="29">
+<h1 class="text-5xl md:text-7xl font-bold text-white mb-4 wipe-animation" data-llama-id="30">Cloud as Code</h1>
+<p class="text-xl md:text-2xl mb-8" data-llama-id="31">Modernize Your Cloud Infrastructure Without the Hassle</p>
+<a class="bg-[#38BDF8] text-[#0F172A] px-6 py-3 rounded-lg font-semibold hover:bg-white transition" data-llama-id="32" href="#get-started">Learn More</a>
+<div class="mt-8" data-llama-id="33">
+<i class="fas fa-chevron-down text-white text-3xl cursor-pointer animate-bounce-fade" data-llama-id="34" id="scrollArrow"></i>
+</div>
+</div>
+</section>
+<!-- About / Services Section -->
+<section class="py-20 bg-[#0F172A]" data-llama-id="35" id="about">
+<div class="max-w-7xl mx-auto px-4" data-llama-id="36">
+<h2 class="text-3xl md:text-4xl font-bold text-white text-center mb-12" data-llama-id="37">Our Services</h2>
+<div class="grid md:grid-cols-3 gap-8" data-llama-id="38">
+<div class="bg-[#1E293B] p-6 rounded-lg text-center hover:shadow-xl transition" data-llama-id="39">
+<i class="fas fa-code text-4xl text-[#38BDF8]" data-llama-id="40"></i>
+<h3 class="text-2xl font-bold mb-2" data-llama-id="41">Code Optimization</h3>
+<p data-llama-id="42">Improve existing code for better performance and maintainability while minimizing disruptions.</p>
+</div>
+<div class="bg-[#1E293B] p-6 rounded-lg text-center hover:shadow-xl transition" data-llama-id="43">
+<i class="fas fa-check-circle text-4xl text-[#38BDF8]" data-llama-id="44"></i>
+<h3 class="text-2xl font-bold mb-2" data-llama-id="45">Best Practices</h3>
+<p data-llama-id="46">Implement industry best practices to secure and modernize your cloud infrastructure.</p>
+</div>
+<div class="bg-[#1E293B] p-6 rounded-lg text-center hover:shadow-xl transition" data-llama-id="47">
+<i class="fas fa-sync-alt text-4xl text-[#38BDF8]" data-llama-id="48"></i>
+<h3 class="text-2xl font-bold mb-2" data-llama-id="49">Infrastructure Updates</h3>
+<p data-llama-id="50">Stay current with minimal disruption through seamless code and infrastructure updates.</p>
+</div>
+</div>
+</div>
+</section>
+<!-- Benefits Section -->
+<section class="py-20 bg-[#1E293B]" data-llama-id="51">
+<div class="max-w-7xl mx-auto px-4 md:flex md:items-center" data-llama-id="52">
+<div class="md:w-1/2" data-llama-id="53">
+<img alt="Cloud Infrastructure" class="rounded-lg shadow-xl w-full h-auto" src="https://llamapress-ai-image-uploads.s3.us-west-2.amazonaws.com/x94vzymkqh99ke3f70y7bcp5t8ni" data-llama-id="54">
+</div>
+<div class="md:w-1/2 md:ml-10 mt-8 md:mt-0" data-llama-id="55">
+<h2 class="text-3xl md:text-4xl font-bold text-white mb-6" data-llama-id="56">Why Choose Us?</h2>
+<ul class="list-disc ml-5 space-y-3" data-llama-id="57">
+<li data-llama-id="58">Reduce downtime with seamless code improvements.</li>
+<li data-llama-id="59">Stay secure and compliant with industry standards.</li>
+<li data-llama-id="60">Scale your operations without costly overhauls.</li>
+<li data-llama-id="61">Expert team dedicated to your cloud success.</li>
+</ul>
+<div class="mt-6" data-llama-id="62">
+<span class="text-2xl font-bold text-[#38BDF8]" data-llama-id="63">99.9%</span> uptime guaranteed
+        </div>
+</div>
+</div>
+</section>
+<!-- Process Section -->
+<section class="py-20 bg-[#0F172A]" data-llama-id="64">
+<div class="max-w-7xl mx-auto px-4" data-llama-id="65">
+<h2 class="text-3xl md:text-4xl font-bold text-white text-center mb-12" data-llama-id="66">Our Process</h2>
+<div class="grid md:grid-cols-4 gap-8" data-llama-id="67">
+<div class="text-center" data-llama-id="68">
+<div class="w-16 h-16 mx-auto bg-[#38BDF8] rounded-full flex items-center justify-center mb-4" data-llama-id="69">
+<i class="fas fa-search text-[#0F172A]" data-llama-id="70"></i>
+</div>
+<h3 class="font-bold text-xl mb-2" data-llama-id="71">Analysis</h3>
+<p data-llama-id="72">Deep dive into your systems and identify optimization areas.</p>
+</div>
+<div class="text-center" data-llama-id="73">
+<div class="w-16 h-16 mx-auto bg-[#38BDF8] rounded-full flex items-center justify-center mb-4" data-llama-id="74">
+<i class="fas fa-tools text-[#0F172A]" data-llama-id="75"></i>
+</div>
+<h3 class="font-bold text-xl mb-2" data-llama-id="76">Planning</h3>
+<p data-llama-id="77">Create a tailored strategy that minimizes downtime.</p>
+</div>
+<div class="text-center" data-llama-id="78">
+<div class="w-16 h-16 mx-auto bg-[#38BDF8] rounded-full flex items-center justify-center mb-4" data-llama-id="79">
+<i class="fas fa-code text-[#0F172A]" data-llama-id="80"></i>
+</div>
+<h3 class="font-bold text-xl mb-2" data-llama-id="81">Execution</h3>
+<p data-llama-id="82">Implement changes with precision and care.</p>
+</div>
+<div class="text-center" data-llama-id="83">
+<div class="w-16 h-16 mx-auto bg-[#38BDF8] rounded-full flex items-center justify-center mb-4" data-llama-id="84">
+<i class="fas fa-rocket text-[#0F172A]" data-llama-id="85"></i>
+</div>
+<h3 class="font-bold text-xl mb-2" data-llama-id="86">Launch</h3>
+<p data-llama-id="87">Deploy and monitor for long term success.</p>
+</div>
+</div>
+</div>
+</section>
+<!-- Social Proof Section -->
+<section class="py-20 bg-[#1E293B]" data-llama-id="88">
+</section>
+<!-- Pricing Section -->
+<section class="py-20 bg-[#0F172A]" data-llama-id="89" id="pricing">
+<div class="max-w-7xl mx-auto px-4" data-llama-id="90">
+<h2 class="text-3xl md:text-4xl font-bold text-white text-center mb-12" data-llama-id="91">Pricing Plans</h2>
+<div class="grid md:grid-cols-3 gap-8" data-llama-id="92">
+<div class="bg-[#1E293B] p-6 rounded-lg hover:shadow-xl transition" data-llama-id="93">
+<h3 class="text-2xl font-bold mb-4 text-center" data-llama-id="94">Basic</h3>
+<p class="text-center text-3xl font-bold mb-4" data-llama-id="95">$49/mo</p>
+<ul class="mb-6 space-y-2" data-llama-id="96">
+<li data-llama-id="97">Code Analysis</li>
+<li data-llama-id="98">Minor Updates</li>
+<li data-llama-id="99">Email Support</li>
+</ul>
+<div class="text-center" data-llama-id="100">
+<a class="bg-[#38BDF8] text-[#0F172A] px-4 py-2 rounded hover:bg-white transition" data-llama-id="101" href="#signup">Choose Plan</a>
+</div>
+</div>
+<div class="bg-[#1E293B] p-6 rounded-lg border-2 border-[#38BDF8] hover:shadow-xl transition" data-llama-id="102">
+<h3 class="text-2xl font-bold mb-4 text-center" data-llama-id="103">Standard</h3>
+<p class="text-center text-3xl font-bold mb-4" data-llama-id="104">$99/mo</p>
+<ul class="mb-6 space-y-2" data-llama-id="105">
+<li data-llama-id="106">Everything in Basic</li>
+<li data-llama-id="107">Priority Support</li>
+<li data-llama-id="108">Infrastructure Audit</li>
+</ul>
+<div class="text-center" data-llama-id="109">
+<a class="bg-[#38BDF8] text-[#0F172A] px-4 py-2 rounded hover:bg-white transition" data-llama-id="110" href="#signup">Choose Plan</a>
+</div>
+</div>
+<div class="bg-[#1E293B] p-6 rounded-lg hover:shadow-xl transition" data-llama-id="111">
+<h3 class="text-2xl font-bold mb-4 text-center" data-llama-id="112">Premium</h3>
+<p class="text-center text-3xl font-bold mb-4" data-llama-id="113">$199/mo</p>
+<ul class="mb-6 space-y-2" data-llama-id="114">
+<li data-llama-id="115">Everything in Standard</li>
+<li data-llama-id="116">24/7 Support</li>
+<li data-llama-id="117">Customized Solutions</li>
+</ul>
+<div class="text-center" data-llama-id="118">
+<a class="bg-[#38BDF8] text-[#0F172A] px-4 py-2 rounded hover:bg-white transition" data-llama-id="119" href="#signup">Choose Plan</a>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Call-to-Action Section -->
+<section class="py-20 bg-[#1E293B]" data-llama-id="120" id="demo">
+<div class="max-w-7xl mx-auto px-4 text-center" data-llama-id="121">
+<h2 class="text-3xl md:text-4xl font-bold text-white mb-6" data-llama-id="122">Request a Demo</h2>
+<p class="mb-6" data-llama-id="123">Experience the transformation of your cloud infrastructure with our expert solutions. Fill out the form below to get started!</p>
+<form class="max-w-xl mx-auto space-y-4" data-llama-id="124">
+<input class="w-full px-4 py-3 rounded bg-[#0F172A] placeholder-gray-400 text-white focus:outline-none" data-llama-id="125" placeholder="Your Name" type="text">
+<input class="w-full px-4 py-3 rounded bg-[#0F172A] placeholder-gray-400 text-white focus:outline-none" data-llama-id="126" placeholder="Email Address" type="email">
+<textarea class="w-full px-4 py-3 rounded bg-[#0F172A] placeholder-gray-400 text-white focus:outline-none" data-llama-id="127" placeholder="How can we help?" rows="4"></textarea>
+<button class="w-full bg-[#38BDF8] text-[#0F172A] px-4 py-3 rounded hover:bg-white transition" data-llama-id="128" type="submit">Submit Request</button>
+</form>
+</div>
+</section>
+<!-- Signup / Contact Section -->
+<section class="py-20 bg-[#0F172A]" data-llama-id="129" id="signup">
+<div class="max-w-7xl mx-auto px-4 text-center" data-llama-id="130">
+<h2 class="text-3xl md:text-4xl font-bold text-white mb-6" data-llama-id="131">Stay Connected</h2>
+<p class="mb-6" data-llama-id="132">Sign up for our newsletter and stay updated on the latest cloud optimization trends.</p>
+<form class="max-w-lg mx-auto flex flex-col sm:flex-row items-center justify-center space-y-4 sm:space-y-0 sm:space-x-4" data-llama-id="133">
+<input class="w-full sm:w-auto px-4 py-3 rounded bg-[#1E293B] placeholder-gray-400 text-white focus:outline-none" data-llama-id="134" placeholder="Your Email" type="email">
+<button class="bg-[#38BDF8] text-[#0F172A] px-6 py-3 rounded hover:bg-white transition" data-llama-id="135" type="submit">Subscribe</button>
+</form>
+</div>
+</section>
+<!-- Footer -->
+<footer class="bg-[#1E293B] py-10" data-llama-id="136">
+<div class="max-w-7xl mx-auto px-4 grid md:grid-cols-4 gap-8" data-llama-id="137">
+<div data-llama-id="138">
+<h3 class="font-bold text-xl text-white mb-4" data-llama-id="139">Cloud as Code</h3>
+<p data-llama-id="140">Modern cloud solutions tailored to your needs.</p>
+</div>
+<div data-llama-id="141">
+<h4 class="font-bold text-lg text-white mb-4" data-llama-id="142">Contact</h4>
+<p data-llama-id="143">Email: info@cloudascode.com</p>
+<p data-llama-id="144">Phone: (555) 123-4567</p>
+</div>
+<div data-llama-id="145">
+<h4 class="font-bold text-lg text-white mb-4" data-llama-id="146">Social</h4>
+<div class="flex space-x-4" data-llama-id="147">
+<a class="hover:text-[#38BDF8]" data-llama-id="148" href="#"><i class="fab fa-twitter" data-llama-id="149"></i></a>
+<a class="hover:text-[#38BDF8]" data-llama-id="150" href="#"><i class="fab fa-linkedin" data-llama-id="151"></i></a>
+<a class="hover:text-[#38BDF8]" data-llama-id="152" href="#"><i class="fab fa-facebook" data-llama-id="153"></i></a>
+</div>
+</div>
+<div data-llama-id="154">
+<h4 class="font-bold text-lg text-white mb-4" data-llama-id="155">Legal</h4>
+<a class="block hover:text-[#38BDF8]" data-llama-id="156" href="#">Privacy Policy</a>
+<a class="block hover:text-[#38BDF8]" data-llama-id="157" href="#">Terms of Service</a>
+</div>
+</div>
+<div class="mt-8 text-center text-gray-400" data-llama-id="158">© 2025 Cloud as Code. All rights reserved.</div>
+</footer>
+<script data-llama-id="159">
+    // Mobile menu toggle
+    const mobileMenuButton = document.getElementById('mobileMenuButton');
+    const mobileMenu = document.getElementById('mobileMenu');
+    mobileMenuButton.addEventListener('click', () => {
+      mobileMenu.classList.toggle('hidden');
+    });
+    
+    // Smooth scroll to Our Services section when arrow is clicked
+    document.getElementById('scrollArrow').addEventListener('click', () => {
+      document.getElementById('about').scrollIntoView({ behavior: 'smooth' });
+    });
+  </script>
+<!-- This model is for viewing historical contents of the page and the prompts that changed it -->
+<!-- Side panel for the Llama Bot, includes the html and javascript for managing it -->
+<!-- Email confirmation dialog -->
+<!-- Timeline Overlay -->
+<!-- Existing floating toolbar -->
+<!-- Add this new div for the custom context menu -->
+<!--Put your analytics code here for Google Analytics, Facebook Pixels, etc.-->
+  
+  
+  
+  
+
+  
+  
+
+
+
+
+
+
+
+
+    
+<!-- This model is for viewing historical contents of the page and the prompts that changed it -->
+
+
+
+<!-- Side panel for the Llama Bot, includes the html and javascript for managing it -->
+
+
+    
+    
+          
+
+          <!-- Email confirmation dialog -->
+          
+
+          
+  
+
+
+
+
+
+
+<!-- Timeline Overlay -->
+
+
+
+
+
+
+
+
+
+
+ 
+
+
+
+
+
+
+
+
+
+
+
+
+ 
+
+
+
+
+ 
+
+
+
+
+
+
+
+
+
+   
+      <!-- Existing floating toolbar -->
+    
+
+    
+ 
+  
+<!-- Add this new div for the custom context menu -->
+
+
+
+ 
+
+
+<!--Put your analytics code here for Google Analytics, Facebook Pixels, etc.-->
+  
+  
+  
+  
+  
+
+  
+  
+
+
+
+
+
+
+
+
+    
+<!-- This model is for viewing historical contents of the page and the prompts that changed it -->
+
+
+
+<!-- Side panel for the Llama Bot, includes the html and javascript for managing it -->
+
+
+    
+    
+          
+
+          <!-- Email confirmation dialog -->
+          
+
+          
+  
+
+
+
+
+
+
+<!-- Timeline Overlay -->
+
+
+
+
+
+
+
+
+
+
+ 
+
+
+
+
+
+
+
+
+
+
+
+
+ 
+
+
+
+
+ 
+
+
+
+
+
+
+
+
+
+   
+      <!-- Existing floating toolbar -->
+    
+
+    
+ 
+  
+<!-- Add this new div for the custom context menu -->
+
+
+
+ 
+
+
+<!--Put your analytics code here for Google Analytics, Facebook Pixels, etc.-->
+  
+</body></html>

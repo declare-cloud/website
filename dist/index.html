@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Cloud as Code</title>
+  <link href="./styles.css" rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="../node_modules/aos/dist/aos.css" />
+  <style>
+    html {
+      scroll-behavior: smooth;
+    }
+    @keyframes bounceFade {
+      0%, 100% {
+        transform: translateY(0);
+        opacity: 0.4;
+      }
+      50% {
+        transform: translateY(10px);
+        opacity: 1;
+      }
+    }
+    .animate-bounce-fade {
+      animation: bounceFade 2s infinite ease-in-out;
+    }
+    @keyframes wipeIn {
+      0% {
+        clip-path: inset(0 100% 0 0);
+      }
+      100% {
+        clip-path: inset(0 0 0 0);
+      }
+    }
+
+  </style>
+</head>
+<body class="bg-[#0F172A] text-[#F1F5F9]" style="cursor: default;">
+
+  <!-- Navigation -->
+  <nav class="fixed top-0 left-0 right-0 z-50 bg-[#1E293B] bg-opacity-95 shadow">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex justify-between items-center h-16">
+      <div class="flex items-center space-x-3">
+        <i class="fas fa-cloud text-2xl text-[#38BDF8]"></i>
+        <span class="font-bold text-xl text-white">Cloud-as-Code</span>
+      </div>
+      <div class="hidden md:flex space-x-6 items-center">
+        <a class="hover:text-[#38BDF8]" href="#about">About</a>
+        <a class="hover:text-[#38BDF8]" href="#pricing">Pricing</a>
+        <a class="hover:text-[#38BDF8]" href="#demo">Demo</a>
+        <a class="bg-[#38BDF8] text-[#0F172A] px-4 py-2 rounded hover:bg-white transition" href="#get-started">Signup</a>
+      </div>
+      <div class="md:hidden">
+        <button class="text-[#F1F5F9] focus:outline-none" id="mobileMenuButton">
+          <i class="fas fa-bars"></i>
+        </button>
+      </div>
+    </div>
+    <!-- Mobile Menu -->
+    <div class="md:hidden hidden bg-[#1E293B]" id="mobileMenu">
+      <div class="px-2 pt-2 pb-3 space-y-1">
+        <a class="block px-3 py-2 hover:text-[#38BDF8]" href="#about">About</a>
+        <a class="block px-3 py-2 hover:text-[#38BDF8]" href="#pricing">Pricing</a>
+        <a class="block px-3 py-2 hover:text-[#38BDF8]" href="#demo">Demo</a>
+        <a class="block bg-[#38BDF8] text-[#0F172A] px-3 py-2 rounded text-center" href="#get-started">Signup</a>
+      </div>
+    </div>
+  </nav>
+  <!-- Nav end -->
+
+  <!-- Hero Section -->
+  <section class="relative flex items-center justify-center h-screen bg-cover bg-center" id="home">
+    <video autoplay muted loop class="absolute inset-0 w-full h-full object-cover">
+      <source src="/video/network_of_connections.mp4" type="video/mp4">
+      Your browser does not support the video tag.
+    </video>
+    <div class="absolute inset-0 bg-black opacity-50"></div>
+    <div class="relative z-10 text-center px-5" data-aos="fade-down" data-aos-duration="1500" data-aos-delay="200">
+      <h1 class="text-6xl md:text-9xl font-bold text-white mb-6">Cloud-as-Code</h1>
+      <p class="text-x2 md:text-3xl mb-11">Modernize your cloud infrastructure without the hassle</p>
+      <a class="bg-[#38BDF8] text-[#0F172A] px-6 py-3 rounded-lg font-semibold hover:bg-white transition" href="#get-started">Learn More</a>
+      <div class="mt-8">
+        <i class="fas fa-chevron-down text-white text-3xl cursor-pointer animate-bounce-fade" id="scrollArrow"></i>
+      </div>
+    </div>
+  </section>
+
+  <!-- About / Services Section -->
+  <section class="py-20 bg-[#011425]" id="about">
+
+    <div class="max-w-7xl mx-auto px-4" data-aos="fade-down" data-aos-duration="1500" data-aos-delay="200" >
+      <h2 class="text-4xl md:text-5xl font-bold text-white text-center mb-12">Our Solutions</h2>
+
+      <div class="grid md:grid-cols-3 gap-8">
+
+        <div class="bg-[#1E293B] p-6 rounded-lg text-center hover:shadow-xl transition" >
+          <i class="fas fa-code text-4xl text-[#38BDF8]"></i>
+          <h3 class="text-2xl font-bold mb-2">Code Optimization</h3>
+          <p>Improve existing code for better performance and maintainability while minimizing disruptions.</p>
+        </div>
+
+        <div class="bg-[#1E293B] p-6 rounded-lg text-center hover:shadow-xl transition">
+          <i class="fas fa-check-circle text-4xl text-[#38BDF8]"></i>
+          <h3 class="text-2xl font-bold mb-2">Best Practices</h3>
+          <p>Implement industry best practices to secure and modernize your cloud infrastructure.</p>
+        </div>
+
+        <div class="bg-[#1E293B] p-4 rounded-lg text-center hover:shadow-xl transition">
+          <i class="fas fa-sync-alt text-4xl text-[#38BDF8]"></i>
+          <h3 class="text-2xl font-bold mb-2">Infrastructure Updates</h3>
+          <p>Stay current with minimal disruption through seamless code and infrastructure updates.</p>
+        </div>
+
+      </div>
+
+      <div class="grid md:grid-cols-1 gap-8 pt-4">
+        <div class="relative h-max rounded-lg overflow-hidden">
+          <img src="/images/code-screenshot.png" alt="Code Screenshot" class="w-full h-auto object-cover rounded-lg">
+        </div>
+      </div>
+
+   </div>
+    
+  </section>
+
+<!-- Process Section -->
+<section class="py-20 bg-[#011425]">
+  <div class="max-w-7xl mx-auto px-8" data-aos="fade-down" data-aos-duration="1500" data-aos-delay="200" >
+    <h2 class="text-4xl md:text-5xl font-bold text-white text-center mb-12">How it Works</h2>
+    <p class="text-center text-lg mb-8">We follow a structured approach to ensure your cloud infrastructure is optimized for performance and security.</p>
+    <div class="grid md:grid-cols-4 gap-8">
+      <div class="text-center">
+        <div class="w-16 h-16 mx-auto bg-[#38BDF8] rounded-full flex items-center justify-center mb-4">
+          <i class="fas fa-search text-[#0F172A]"></i>
+        </div>
+        <h3 class="font-bold text-xl mb-2">Analysis</h3>
+        <p>Deep dive into your systems and identify optimization areas.</p>
+      </div>
+      <div class="text-center">
+        <div class="w-16 h-16 mx-auto bg-[#38BDF8] rounded-full flex items-center justify-center mb-4">
+          <i class="fas fa-tools text-[#0F172A]"></i>
+        </div>
+        <h3 class="font-bold text-xl mb-2">Planning</h3>
+        <p>Create a tailored strategy that minimizes downtime.</p>
+      </div>
+      <div class="text-center">
+        <div class="w-16 h-16 mx-auto bg-[#38BDF8] rounded-full flex items-center justify-center mb-4">
+          <i class="fas fa-code text-[#0F172A]"></i>
+        </div>
+        <h3 class="font-bold text-xl mb-2">Execution</h3>
+        <p>Implement changes with precision and care.</p>
+      </div>
+      <div class="text-center">
+        <div class="w-16 h-16 mx-auto bg-[#38BDF8] rounded-full flex items-center justify-center mb-4">
+          <i class="fas fa-rocket text-[#0F172A]"></i>
+        </div>
+        <h3 class="font-bold text-xl mb-2">Launch</h3>
+        <p>Deploy and monitor for long term success.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+  <!-- Our Solutions -->
+  <section class="py-40 bg-[#011425] bg-cover" style="background-image: url('/images/cloud.jpg'); ">
+    <div class="max-w-7xl mx-auto px-4 md:flex md:items-center" data-aos="fade-down" data-aos-duration="1500" data-aos-delay="200" >
+      <div class="md:w-1/2 text-whitep-6 rounded-lg ml-auto text-left">
+        <h2 class="text-4xl md:text-5xl font-bold mb-6">Why Choose Us</h2>
+        <p class="text-1xl md:text-2xl mb-6">Cloud as Code offers a range of solutions to modernize your cloud infrastructure without the hassle. Our expert team will work with you to optimize your systems and keep your operations running smoothly.</p>
+        <ul class="list-disc ml-5 space-y-3">
+          <li>Reduce downtime with seamless code improvements.</li>
+          <li>Stay secure and compliant with industry standards.</li>
+          <li>Scale your operations without costly overhauls.</li>
+          <li>Expert team dedicated to your cloud success.</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- Pricing Section -->
+  <section class="py-20 bg-[#011425]" id="pricing">
+    <div class="max-w-7xl mx-auto px-4" data-aos="fade-down" data-aos-duration="1500" data-aos-delay="200">
+      <h2 class="text-4xl md:text-5xl font-bold text-white text-center mb-12">Pricing Plans</h2>
+      <p class="text-center text-lg mb-8">Choose a plan that fits your needs.</p>
+      <div class="grid md:grid-cols-3 gap-8">
+        <div class="bg-[#1E293B] p-6 rounded-lg hover:shadow-xl transition">
+          <h3 class="text-2xl font-bold mb-4 text-center">Basic</h3>
+          <p class="text-center text-3xl font-bold mb-4">$49/mo</p>
+          <ul class="mb-6 space-y-2">
+            <li>Code Analysis</li>
+            <li>Minor Updates</li>
+            <li>Email Support</li>
+          </ul>
+          <div class="text-center">
+            <a class="bg-[#38BDF8] text-[#0F172A] px-4 py-2 rounded hover:bg-white transition" href="#signup">Choose Plan</a>
+          </div>
+        </div>
+        <div class="bg-[#1E293B] p-6 rounded-lg border-2 border-[#38BDF8] hover:shadow-xl transition">
+          <h3 class="text-2xl font-bold mb-4 text-center">Standard</h3>
+          <p class="text-center text-3xl font-bold mb-4">$99/mo</p>
+          <ul class="mb-6 space-y-2">
+            <li>Everything in Basic</li>
+            <li>Priority Support</li>
+            <li>Infrastructure Audit</li>
+          </ul>
+          <div class="text-center">
+            <a class="bg-[#38BDF8] text-[#0F172A] px-4 py-2 rounded hover:bg-white transition" href="#signup">Choose Plan</a>
+          </div>
+        </div>
+        <div class="bg-[#1E293B] p-6 rounded-lg hover:shadow-xl transition">
+          <h3 class="text-2xl font-bold mb-4 text-center">Premium</h3>
+          <p class="text-center text-3xl font-bold mb-4">$199/mo</p>
+          <ul class="mb-6 space-y-2">
+            <li>Everything in Standard</li>
+            <li>24/7 Support</li>
+            <li>Customized Solutions</li>
+          </ul>
+          <div class="text-center">
+            <a class="bg-[#38BDF8] text-[#0F172A] px-4 py-2 rounded hover:bg-white transition" href="#signup">Choose Plan</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Call-to-Action Section -->
+  <section class="py-20 bg-[#011425]" id="demo">
+    <div class="max-w-7xl mx-auto px-4 text-center" data-aos="fade-down" data-aos-duration="1500" data-aos-delay="200">
+      <h2 class="text-4xl md:text-5xl font-bold text-white mb-6">Request a Demo</h2>
+      <p class="mb-6">Experience the transformation of your cloud infrastructure with our expert solutions.</p>
+      <form class="max-w-xl mx-auto space-y-4">
+        <input class="w-full px-4 py-3 rounded bg-[#1E293B] placeholder-gray-400 text-white focus:outline-none" placeholder="Your Name" type="text">
+        <input class="w-full px-4 py-3 rounded bg-[#1E293B] placeholder-gray-400 text-white focus:outline-none" placeholder="Email Address" type="email">
+        <textarea class="w-full px-4 py-3 rounded bg-[#1E293B] placeholder-gray-400 text-white focus:outline-none" placeholder="How can we help?" rows="4"></textarea>
+        <button class="w-full bg-[#38BDF8] text-[#0F172A] px-4 py-3 rounded hover:bg-white transition" type="submit">Submit Request</button>
+      </form>
+    </div>
+  </section>
+
+  <!-- Signup / Contact Section -->
+  
+
+  <!-- Footer -->
+  <footer class="bg-[#1E293B] py-10">
+    <div class="max-w-7xl mx-auto px-4 grid md:grid-cols-4 gap-8">
+      <div>
+        <h3 class="font-bold text-xl text-white mb-4">Cloud as Code</h3>
+        <p>Modern cloud solutions tailored to your needs.</p>
+      </div>
+      <div>
+        <h4 class="font-bold text-lg text-white mb-4">Contact</h4>
+        <p>Email: info@cloudascode.com</p>
+        <p>Phone: (555) 123-4567</p>
+      </div>
+      <div>
+        <h4 class="font-bold text-lg text-white mb-4">Social</h4>
+        <div class="flex space-x-4">
+          <a class="hover:text-[#38BDF8]" href="#"><i class="fab fa-twitter"></i></a>
+          <a class="hover:text-[#38BDF8]" href="#"><i class="fab fa-linkedin"></i></a>
+          <a class="hover:text-[#38BDF8]" href="#"><i class="fab fa-facebook"></i></a>
+        </div>
+      </div>
+      <div>
+        <h4 class="font-bold text-lg text-white mb-4">Legal</h4>
+        <a class="block hover:text-[#38BDF8]" href="#">Privacy Policy</a>
+        <a class="block hover:text-[#38BDF8]" href="#">Terms of Service</a>
+      </div>
+    </div>
+    <div class="mt-8 text-center text-gray-400">© 2025 Cloud as Code. All rights reserved.</div>
+  </footer>
+
+  <script src="../node_modules/aos/dist/aos.js"></script>
+  <script>
+    // Mobile menu toggle
+    const mobileMenuButton = document.getElementById('mobileMenuButton');
+    const mobileMenu = document.getElementById('mobileMenu');
+    mobileMenuButton.addEventListener('click', () => {
+      mobileMenu.classList.toggle('hidden');
+    });
+  
+    // Smooth scroll to Our Services section when arrow is clicked
+    document.getElementById('scrollArrow').addEventListener('click', () => {
+      document.getElementById('about').scrollIntoView({ behavior: 'smooth' });
+    });
+  
+    // Initialize Animate On Scroll (AOS) library
+    document.addEventListener('DOMContentLoaded', () => {
+    AOS.init();
+    });
+
+  </script>
+  
+</body>
+</html>
