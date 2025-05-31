@@ -12,6 +12,7 @@ services:
       DISPLAY: dummy
     volumes:
       - ..:/workspace # Mount your project folder
+      - node_modules:/workspace/node_modules # Fast native volume for node_modules
       - vscode-server-data:/home/node/.vscode-server
       - vscode-server-insiders-data:/home/node/.vscode-server-insiders
       - history-data:/home/node/history
@@ -20,6 +21,7 @@ services:
       - root-history-data:/root/history
 
 volumes:
+  node_modules:
   vscode-server-data:
   vscode-server-insiders-data:
   history-data:
