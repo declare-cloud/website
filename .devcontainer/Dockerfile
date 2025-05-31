@@ -22,7 +22,6 @@ RUN mkdir -p /root/.aws /root/.azure /root/.kube /root/.packer.d /root/.terrafor
 USER node
 
 RUN curl -fsSL https://bun.sh/install | bash
-RUN bun next telemetry disable
 
 ENV PATH="/root/.bun/bin:${PATH}"
 

@@ -13,4 +13,5 @@ done
 echo "local_workspace_path=${local_workspace_path}"
 
 bun install
+bun next telemetry disable
 bunx commitizen init cz-conventional-changelog --save-dev --save-exact
