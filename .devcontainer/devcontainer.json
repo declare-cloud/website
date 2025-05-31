@@ -9,17 +9,18 @@
     "customizations": {
         "vscode": {
             "extensions": [
-                "esbenp.prettier-vscode",
-                "dbaeumer.vscode-eslint",
                 "ms-azuretools.vscode-docker",
                 "vivaxy.vscode-conventional-commits",
                 "exiasr.hadolint",
-                "mosapride.zenkaku",
                 "ms-azuretools.vscode-docker",
                 "redhat.vscode-yaml",
                 "shardulm94.trailing-spaces",
                 "tamasfe.even-better-toml",
-                "yzhang.markdown-all-in-one"
+                "yzhang.markdown-all-in-one",
+                "ms-vscode.vscode-typescript-next",
+                "dbaeumer.vscode-eslint",
+                "esbenp.prettier-vscode",
+                "streetsidesoftware.code-spell-checker"
             ],
             // Suppress the dev container notification
             "settings": {

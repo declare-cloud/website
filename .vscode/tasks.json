@@ -1,0 +1,27 @@
+// .vscode/tasks.json
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "bun dev",
+      "type": "shell",
+      "command": "bun run dev",
+      "group": "build",
+      "presentation": {
+        "reveal": "always"
+      }
+    },
+    {
+      "label": "bun test",
+      "type": "shell",
+      "command": "bun test",
+      "group": "test"
+    },
+    {
+      "label": "playwright test",
+      "type": "shell",
+      "command": "playwright test",
+      "group": "test"
+    }
+  ]
+}

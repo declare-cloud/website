@@ -9,10 +9,11 @@ services:
         BASE_IMAGE: mcr.microsoft.com/devcontainers/typescript-node:22
     env_file: ./.env.app
     environment:
-      DISPLAY: dummy
+      NEXT_TELEMETRY_DISABLED: 1
     volumes:
       - ..:/workspace # Mount your project folder
       - node_modules:/workspace/node_modules # Fast native volume for node_modules
+      - next:/workspace/.next # Fast native volume for .next
       - vscode-server-data:/home/node/.vscode-server
       - vscode-server-insiders-data:/home/node/.vscode-server-insiders
       - history-data:/home/node/history
@@ -22,6 +23,7 @@ services:
 
 volumes:
   node_modules:
+  next:
   vscode-server-data:
   vscode-server-insiders-data:
   history-data:
