@@ -1,0 +1,28 @@
+name: website
+
+services:
+  app:
+    build:
+      context: ..
+      dockerfile: ./.devcontainer/Dockerfile
+      args:
+        BASE_IMAGE: mcr.microsoft.com/devcontainers/typescript-node:22
+    env_file: ./.env.app
+    environment:
+      DISPLAY: dummy
+    volumes:
+      - ..:/workspace # Mount your project folder
+      - vscode-server-data:/home/node/.vscode-server
+      - vscode-server-insiders-data:/home/node/.vscode-server-insiders
+      - history-data:/home/node/history
+      - root-vscode-server-data:/root/.vscode-server
+      - root-vscode-server-insiders-data:/root/.vscode-server-insiders
+      - root-history-data:/root/history
+
+volumes:
+  vscode-server-data:
+  vscode-server-insiders-data:
+  history-data:
+  root-vscode-server-data:
+  root-vscode-server-insiders-data:
+  root-history-data:

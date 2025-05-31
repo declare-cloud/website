@@ -1,0 +1,10 @@
+node_modules
+.bun
+bun.lockb
+.next
+out
+coverage
+.env
+.DS_Store
+*.local
+/node_modules
