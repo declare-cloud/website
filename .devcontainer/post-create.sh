@@ -14,4 +14,5 @@ echo "local_workspace_path=${local_workspace_path}"
 
 bun install
 bun next telemetry disable
+bun add next react react-dom
 bunx commitizen init cz-conventional-changelog --save-dev --save-exact

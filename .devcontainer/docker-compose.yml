@@ -10,8 +10,10 @@ services:
     env_file: ./.env.app
     environment:
       NEXT_TELEMETRY_DISABLED: 1
+      WATCHPACK_POLLING: true
     volumes:
       - ..:/workspace # Mount your project folder
+      - cache:/workspace/cache # Fast native volume for cache
       - node_modules:/workspace/node_modules # Fast native volume for node_modules
       - next:/workspace/.next # Fast native volume for .next
       - vscode-server-data:/home/node/.vscode-server
@@ -22,6 +24,7 @@ services:
       - root-history-data:/root/history
 
 volumes:
+  cache:
   node_modules:
   next:
   vscode-server-data:
