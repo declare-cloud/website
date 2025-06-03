@@ -1,6 +1,5 @@
 node_modules
 .bun
-bun.lock
 .next
 out
 coverage
