@@ -6,7 +6,7 @@ We regularly update and maintain the latest release of this project.
 Older releases may not receive security updates.
 
 | Version | Supported          |
-| ------- | -----------------  |
+| ------- | ------------------ |
 | latest  | :white_check_mark: |
 | <latest | :x:                |
 

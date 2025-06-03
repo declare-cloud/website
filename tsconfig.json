@@ -12,11 +12,7 @@
     "forceConsistentCasingInFileNames": true,
     "skipLibCheck": true,
     "baseUrl": ".",
-    "lib": [
-      "dom",
-      "dom.iterable",
-      "esnext"
-    ],
+    "lib": ["dom", "dom.iterable", "esnext"],
     "allowJs": true,
     "incremental": true,
     "plugins": [
@@ -25,15 +21,6 @@
       }
     ]
   },
-  "include": [
-    "__tests__",
-    "app",
-    "e2e",
-    "next-env.d.ts",
-    "pages",
-    ".next/types/**/*.ts"
-  ],
-  "exclude": [
-    "node_modules"
-  ]
+  "include": ["__tests__", "app", "e2e", "next-env.d.ts", "pages", ".next/types/**/*.ts"],
+  "exclude": ["node_modules"]
 }

@@ -20,7 +20,7 @@
         "reveal": "always"
       }
     },
-        {
+    {
       "label": "next start",
       "type": "shell",
       "command": "next start",

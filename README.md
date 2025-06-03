@@ -30,11 +30,13 @@ You do **not** need to manually install Bun, Commitizen, or any extensions when 
 All commits **must** follow the [Conventional Commits](https://www.conventionalcommits.org/) standard.
 
 To create a commit with a guided prompt, run:
+
 ```
 bunx cz
 ```
 
 or
+
 ```
 bun run commit
 ```
@@ -46,16 +48,19 @@ The VS Code extension for Conventional Commits is also included for easy commit 
 ## Testing
 
 - **Unit tests with coverage:**
+
 ```
 bun testbun run test:coverage
 ```
 
 - **End-to-end tests (Playwright):**
+
 ```
 bunx playwright install --with-depsbun run test:e2e
 ```
 
 - **Format and lint checks:**
+
 ```
 bun run format:checkbun run lint:check
 ```
@@ -65,18 +70,22 @@ bun run format:checkbun run lint:check
 ## Docker
 
 To build and run the app locally in Docker:
+
 ```
 bun run builddocker build -t website .docker run -p 3000:3000 website
 ```
+
 ---
 
 ## Helm
 
 - The image and tag are set by CI.
 - To package and install the chart manually:
+
 ```
 helm package chart/helm install website chart-*.tgz
 ```
+
 ---
 
 ## CI/CD & Automated Versioning
@@ -110,14 +119,17 @@ The version for Docker and Helm is determined by commit history – you don’t 
 To enable the CI/CD pipelines, follow these steps:
 
 1. **Ensure Workflow Files**:
+
    - Verify that `.github/workflows/ci.yml`, `.github/workflows/pr-lint.yml`, `.github/workflows/release.yml`, and `.github/dependabot.yml` are in your repository.
    - These files are pre-configured to handle linting, testing, building, and releasing.
 
 2. **Configure GitHub Container Registry (GHCR)**:
+
    - The workflows use `ghcr.io` for Docker images and Helm charts. No additional setup is needed, as they authenticate using `GITHUB_TOKEN`.
    - Ensure your repository has permissions to write packages (Settings > Actions > General > Workflow permissions > Read and write permissions).
 
 3. **Set Up Branch Protection for `main`**:
+
    - Go to your repository > **Settings** > **Branches** > **Branch protection rules**.
    - Click **Add rule** and set the branch name pattern to `main`.
    - Enable:
@@ -127,6 +139,7 @@ To enable the CI/CD pipelines, follow these steps:
    - Save the rule to prevent merging PRs if any checks fail.
 
 4. **Create a Release**:
+
    - After merging changes to `main`, create a tag (e.g., `v1.0.0`) using `standard-version` or manually:
      ```
      bun run release
@@ -135,6 +148,7 @@ To enable the CI/CD pipelines, follow these steps:
    - The `release.yml` workflow will handle building, pushing, and creating a GitHub Release.
 
 5. **Monitor Workflows**:
+
    - Go to the **Actions** tab in your repository to view workflow runs.
    - Check logs for `ci.yml`, `pr-lint.yml`, and `release.yml` to troubleshoot any failures.
 
@@ -149,16 +163,19 @@ To enable the CI/CD pipelines, follow these steps:
 After opening in the DevContainer, you can:
 
 - **Start the app:**
+
 ```
 bun run dev
 ```
 
 - **Test:**
+
 ```
 bun testbun run test:coveragebun run test:e2e
 ```
 
 - **Check formatting and linting:**
+
 ```
 bun run format:checkbun run lint:check
 ```
@@ -168,7 +185,7 @@ bun run format:checkbun run lint:check
 bunx cz
 
 - **Push:**
-Let CI/CD handle building, testing, and deploying.
+  Let CI/CD handle building, testing, and deploying.
 
 ---
 
@@ -199,4 +216,3 @@ Always use `bunx cz` to help format your commit messages!
 Open an issue or ask in Discussions.
 
 ---
-
