@@ -15,10 +15,10 @@ export default {
       'babel-jest',
       {
         presets: [
-        ['@babel/preset-react', { runtime: 'automatic' }],
-        '@babel/preset-env',
-        '@babel/preset-typescript'
-      ]
+          ['@babel/preset-react', { runtime: 'automatic' }],
+          '@babel/preset-env',
+          '@babel/preset-typescript',
+        ],
       },
     ],
   },
