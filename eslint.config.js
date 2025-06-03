@@ -1,7 +1,12 @@
+//import js from '@eslint/js';
 import pluginNext from '@next/eslint-plugin-next';
 import parser from '@typescript-eslint/parser';
 
 export default [
+  {
+    ignores: ['.next/**', 'node_modules/**', 'cache/**'],
+  },
+  //js.configs.recommended,
   {
     name: 'ESLint Config - nextjs',
     languageOptions: {
