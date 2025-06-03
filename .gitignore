@@ -4,6 +4,7 @@ bun.lockb
 .next
 out
 coverage
+test-results
 .env
 .DS_Store
 *.local

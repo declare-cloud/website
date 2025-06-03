@@ -4,7 +4,7 @@ import parser from '@typescript-eslint/parser';
 
 export default [
   {
-    ignores: ['.next/**', 'node_modules/**', 'cache/**'],
+    ignores: ['.next/**', 'node_modules/**', 'cache/**', 'test-results/**', 'coverage/**'],
   },
   //js.configs.recommended,
   {
