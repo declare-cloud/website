@@ -1,24 +1,14 @@
 version: 2
 updates:
-  - package-ecosystem: "npm"
+  - package-ecosystem: npm
     directory: "/"
     schedule:
-      interval: "weekly"
-    commit-message:
-      prefix: "chore"
-      include: "scope"
-    labels:
-      - "dependencies"
-      - "automated"
-    open-pull-requests-limit: 10
-
-  - package-ecosystem: "github-actions"
+      interval: weekly
+  - package-ecosystem: docker
     directory: "/"
     schedule:
-      interval: "weekly"
-    commit-message:
-      prefix: "chore"
-      include: "scope"
-    labels:
-      - "ci"
-      - "automated"
+      interval: weekly
+  - package-ecosystem: github-actions
+    directory: "/"
+    schedule:
+      interval: weekly

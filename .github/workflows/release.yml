@@ -21,9 +21,27 @@ jobs:
 
     - name: Install Bun
       uses: oven-sh/setup-bun@v1
+      with:
+        bun-version: latest
+
+    - name: Cache Bun dependencies
+      uses: actions/cache@v4
+      with:
+        path: ~/.bun/install/cache
+        key: ${{ runner.os }}-bun-${{ hashFiles('**/bun.lockb') }}
+        restore-keys: ${{ runner.os }}-bun-
 
     - name: Install dependencies
       run: bun install
+
+    - name: Format check
+      run: bun run format:check
+
+    - name: Lint
+      run: bun run lint:check
+
+    - name: Unit tests
+      run: bun run test:coverage
 
     - name: Get version from tag
       id: get_version
@@ -35,6 +53,9 @@ jobs:
       run: |
         sed -i "s/^version:.*/version: ${VERSION}/" chart/Chart.yaml
         sed -i "s/^appVersion:.*/appVersion: \"${VERSION}\"/" chart/Chart.yaml
+
+    - name: Lint Helm chart
+      run: helm lint chart
 
     - name: Build app
       run: bun run build
@@ -58,6 +79,11 @@ jobs:
         tags: |
           ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ env.VERSION }}
           ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest
+          ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ env.VERSION }}-${{ github.sha }}
+
+    - name: Scan Docker image
+      run: |
+        docker scout cves ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ env.VERSION }}
 
     - name: Set up Helm
       uses: azure/setup-helm@v4

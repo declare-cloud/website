@@ -19,5 +19,10 @@ jobs:
             test
             style
             perf
+          subjectPattern: ^[A-Z].+$
+          subjectPatternError: |
+            The PR title must follow the conventional commits format (e.g., 'feat: Add new feature', 'fix: Resolve bug').
+            Allowed types: feat, fix, chore, docs, refactor, test, style, perf.
+            The subject must start with a capital letter.
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
