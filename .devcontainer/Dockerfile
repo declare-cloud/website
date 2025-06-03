@@ -22,6 +22,7 @@ RUN mkdir -p /root/.aws /root/.azure /root/.kube /root/.packer.d /root/.terrafor
 USER node
 
 RUN curl -fsSL https://bun.sh/install | bash
+RUN curl -fsSLo /home/node/.bun/bin/tailwindcss https://github.com/tailwindlabs/tailwindcss/releases/latest/download/tailwindcss-linux-x64 && chmod +x /home/node/.bun/bin/tailwindcss
 
 ENV PATH="/home/node/.bun/bin:/workspace/node_modules/.bin:${PATH}"
 

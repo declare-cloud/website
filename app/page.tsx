@@ -1,16 +1,7 @@
-// app/page.tsx
-
 export default function HomePage() {
   return (
-    <main style={{ padding: '2rem', fontFamily: 'sans-serif' }}>
-      <h1>👋 Welcome to declare-cloud/website</h1>
-      <p>
-        Hi. This is a Next.js app running on <b>Bun</b>.<br />
-        <br />
-        <span>
-          Edit <code>app/page.tsx</code> and save to see hot reload in action.
-        </span>
-      </p>
+    <main className="flex min-h-screen items-center justify-center bg-gray-100">
+      <h1 className="text-4xl font-bold text-blue-600">Hello from Tailwind + Bun + Next.js!</h1>
     </main>
   );
 }

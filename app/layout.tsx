@@ -1,15 +1,15 @@
-// app/layout.tsx
-import React from 'react';
+import './globals.css';
+import type { Metadata } from 'next';
 
-export const metadata = {
-  title: 'declare-cloud/website',
-  description: 'A Next.js app running on Bun!',
+export const metadata: Metadata = {
+  title: 'My Tailwind + Bun + Next.js App',
+  description: 'Using App Router and Tailwind with Bun.',
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en">
-      <body style={{ margin: 0, fontFamily: 'sans-serif' }}>{children}</body>
+      <body className="min-h-screen bg-white text-black">{children}</body>
     </html>
   );
 }
