@@ -50,19 +50,21 @@ The VS Code extension for Conventional Commits is also included for easy commit 
 - **Unit tests with coverage:**
 
 ```
-bun testbun run test:coverage
+bun run test:coverage
 ```
 
 - **End-to-end tests (Playwright):**
 
 ```
-bunx playwright install --with-depsbun run test:e2e
+bunx playwright install --with-deps
+bun run test:e2e
 ```
 
 - **Format and lint checks:**
 
 ```
-bun run format:checkbun run lint:check
+bun run format:check
+bun run lint:check
 ```
 
 ---
@@ -72,7 +74,8 @@ bun run format:checkbun run lint:check
 To build and run the app locally in Docker:
 
 ```
-bun run builddocker build -t website .docker run -p 3000:3000 website
+bun run build
+docker build -t website .docker run -p 3000:3000 website
 ```
 
 ---
@@ -165,7 +168,7 @@ After opening in the DevContainer, you can:
 - **Start the app:**
 
 ```
-bun run dev
+bun run dev --watch
 ```
 
 - **Test:**
