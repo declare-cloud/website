@@ -1,0 +1,205 @@
+name: CI/CD
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '**.ts'
+      - '**.tsx'
+      - '**.js'
+      - 'package.json'
+      - 'bun.lock'
+      - 'Dockerfile'
+      - 'chart/**'
+  pull_request:
+    paths:
+      - '**.ts'
+      - '**.tsx'
+      - '**.js'
+      - 'package.json'
+      - 'bun.lock'
+      - 'Dockerfile'
+      - 'chart/**'
+
+env:
+  REGISTRY: ghcr.io
+  IMAGE_NAME: declare-cloud/website
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install Bun
+        uses: oven-sh/setup-bun@v1
+        with:
+          bun-version: latest
+      - name: Cache Bun dependencies
+        uses: actions/cache@v4
+        with:
+          path: ~/.bun/install/cache
+          key: ${{ runner.os }}-bun-${{ hashFiles('**/bun.lock') }}
+          restore-keys: ${{ runner.os }}-bun-
+      - name: Install dependencies
+        run: bun install
+      - name: Format check
+        run: bun run format:check
+      - name: Lint
+        run: bun run lint:check
+
+  unit-tests:
+    runs-on: ubuntu-latest
+    needs: lint
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install Bun
+        uses: oven-sh/setup-bun@v1
+        with:
+          bun-version: latest
+      - name: Cache Bun dependencies
+        uses: actions/cache@v4
+        with:
+          path: ~/.bun/install/cache
+          key: ${{ runner.os }}-bun-${{ hashFiles('**/bun.lock') }}
+          restore-keys: ${{ runner.os }}-bun-
+      - name: Install dependencies
+        run: bun install
+      - name: Unit tests
+        run: bun run test:coverage
+
+  e2e-tests:
+    runs-on: ubuntu-latest
+    needs: unit-tests
+    if: github.event_name == 'pull_request' || github.ref == 'refs/heads/main'
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install Bun
+        uses: oven-sh/setup-bun@v1
+        with:
+          bun-version: latest
+      - name: Cache Bun dependencies
+        uses: actions/cache@v4
+        with:
+          path: ~/.bun/install/cache
+          key: ${{ runner.os }}-bun-${{ hashFiles('**/bun.lock') }}
+          restore-keys: ${{ runner.os }}-bun-
+      - name: Install dependencies
+        run: bun install
+      - name: Install Playwright Browsers
+        run: bunx playwright install --with-deps
+      - name: E2E tests
+        run: bun run test:e2e -- --reporter=dot
+      - name: Upload Playwright Report
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-report
+          path: playwright-report/
+          retention-days: 7
+
+  build-and-push:
+    runs-on: ubuntu-latest
+    needs: e2e-tests
+    permissions:
+      contents: read
+      packages: write
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install Bun
+        uses: oven-sh/setup-bun@v1
+        with:
+          bun-version: latest
+      - name: Cache Bun dependencies
+        uses: actions/cache@v4
+        with:
+          path: ~/.bun/install/cache
+          key: ${{ runner.os }}-bun-${{ hashFiles('**/bun.lock') }}
+          restore-keys: ${{ runner.os }}-bun-
+      - name: Install dependencies
+        run: bun install
+      - name: Calculate version from conventional commits
+        if: github.ref == 'refs/heads/main'
+        id: version
+        run: |
+          bun run release
+          echo "VERSION=$(jq -r .version package.json)" >> $GITHUB_ENV
+      - name: Set version for PR
+        if: github.event_name == 'pull_request'
+        id: pr_version
+        run: |
+          echo "VERSION=pr-${{ github.event.number }}-${{ github.sha }}" >> $GITHUB_ENV
+      - name: Update Helm Chart version
+        if: github.ref == 'refs/heads/main'
+        run: |
+          sed -i "s/^version:.*/version: ${VERSION}/" chart/Chart.yaml
+          sed -i "s/^appVersion:.*/appVersion: \"${VERSION}\"/" chart/Chart.yaml
+      - name: Build app
+        run: bun run build
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+      - name: Log in to GitHub Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      # Always build the image locally (but don't push yet)
+      - name: Build Docker image
+        if: github.event_name == 'pull_request' || github.ref == 'refs/heads/main'
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          file: ./Dockerfile
+          load: true # we want the image to be available for trivy
+          push: false
+          tags: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ env.VERSION }}
+
+      # Scan the locally built image before push
+      - name: Run Trivy scan
+        if: github.event_name == 'pull_request' || github.ref == 'refs/heads/main'
+        uses: aquasecurity/trivy-action@master
+        with:
+          image-ref: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ env.VERSION }}
+          format: 'table'
+          exit-code: 1
+          severity: 'CRITICAL,HIGH'
+        # env:
+        #   TRIVY_SKIP_DB_UPDATE: true
+        #   TRIVY_SKIP_JAVA_DB_UPDATE: true
+
+      # Only push after successful scan AND only on main
+      - name: Push Docker image (main)
+        if: success() && github.ref == 'refs/heads/main'
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          file: ./Dockerfile
+          push: true
+          tags: |
+            ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ env.VERSION }}
+            ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest
+      - name: Set up Helm
+        if: github.ref == 'refs/heads/main'
+        uses: azure/setup-helm@v4
+      - name: Package Helm chart
+        if: github.ref == 'refs/heads/main'
+        run: helm package chart --destination chart-out
+      - name: Login to Helm OCI registry
+        if: github.ref == 'refs/heads/main'
+        env:
+          HELM_EXPERIMENTAL_OCI: 1
+        run: |
+          echo ${{ secrets.GITHUB_TOKEN }} | helm registry login ${{ env.REGISTRY }} --username ${{ github.actor }} --password-stdin
+      - name: Push Helm chart to GHCR
+        if: github.ref == 'refs/heads/main'
+        env:
+          HELM_EXPERIMENTAL_OCI: 1
+        run: |
+          helm push chart-out/*.tgz oci://${{ env.REGISTRY }}/declare-cloud
