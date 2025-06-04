@@ -171,11 +171,11 @@ jobs:
         if: github.event_name == 'pull_request' || github.ref == 'refs/heads/main'
         run: |
           curl -sSfL https://raw.githubusercontent.com/docker/scout-cli/main/install.sh | sh -s -- -b /usr/local/bin
-          docker scout version
+          /usr/local/bin/docker-scout version
       - name: Scan Docker image
         if: github.event_name == 'pull_request' || github.ref == 'refs/heads/main'
         run: |
-          docker scout cves ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ env.VERSION }}
+          /usr/local/bin/docker-scout cves ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ env.VERSION }}
       - name: Set up Helm
         if: github.ref == 'refs/heads/main'
         uses: azure/setup-helm@v4
