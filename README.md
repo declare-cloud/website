@@ -25,11 +25,46 @@ You do **not** need to manually install Bun, Commitizen, or any extensions when 
 
 ---
 
-## Conventional Commits & Commitizen
+---
+## Build Process
+To make sure all the dependencies work correctly, we need to compile the codebase and verify there are no conflicting dependencies.
 
-All commits **must** follow the [Conventional Commits](https://www.conventionalcommits.org/) standard.
+```
+bun run build
+```
 
-To create a commit with a guided prompt, run:
+## Testing Process
+
+- **Format and lint checks:**
+These are static tests to avoid grammar errors and typos.
+```
+bun run format:check
+bun run lint:check
+```
+- **Unit tests with coverage:**
+This is the test to validate there is enough coverage in the test code to test all lines of codebase.
+```
+bun run test:coverage
+```
+- **End-to-end tests (Playwright):**
+These are dynamic tests to validate the code runs as expected. `bun run test` runs the tests under `__tests__` folder and `bun run test:e2e` runs the tests under `e2e` folder.
+For strategic solution, we need to split the responsibilities of the playwright e2e tests and unit tests as there is duplication right now.
+```
+bun run test
+bun run test:e2e
+```
+
+- **Start the app:**
+After the tests pass you can serve the codebase in your browser on `http://localhost:3000`, and run through simple ui checks/acceptance tests. You can stop the serving on terminal via `ctrl+c`
+
+
+```
+bun run dev
+```
+
+- **Commit:**
+
+All commits **must** follow the [Conventional Commits](https://www.conventionalcommits.org/) standard. To create a commit with a guided prompt, run:
 
 ```
 bunx cz
@@ -41,40 +76,19 @@ or
 bun run commit
 ```
 
-The VS Code extension for Conventional Commits is also included for easy commit message composition.
+- **Push:**
+
+  Let CI/CD handle building, testing, and deploying.
 
 ---
 
-## Testing
+## Infrastructure Setup Process
 
-- **Unit tests with coverage:**
-
-```
-bun run test:coverage
-```
-
-- **End-to-end tests (Playwright):**
-
-```
-bunx playwright install --with-deps
-bun run test:e2e
-```
-
-- **Format and lint checks:**
-
-```
-bun run format:check
-bun run lint:check
-```
-
----
-
-## Docker
+### Docker
 
 To build and run the app locally in Docker:
 
 ```
-bun run build
 docker build -t website .docker run -p 3000:3000 website
 ```
 
@@ -161,36 +175,6 @@ To enable the CI/CD pipelines, follow these steps:
 
 ---
 
-## Development
-
-After opening in the DevContainer, you can:
-
-- **Start the app:**
-
-```
-bun run dev --watch
-```
-
-- **Test:**
-
-```
-bun testbun run test:coveragebun run test:e2e
-```
-
-- **Check formatting and linting:**
-
-```
-bun run format:checkbun run lint:check
-```
-
-- **Commit:**
-
-bunx cz
-
-- **Push:**
-  Let CI/CD handle building, testing, and deploying.
-
----
 
 ## Repository Structure
 
@@ -205,14 +189,6 @@ bunx cz
 
 ---
 
-## Example Commit Message
-
-feat(homepage): add welcome banner
-BREAKING CHANGE: homepage structure refactored
-
-Always use `bunx cz` to help format your commit messages!
-
----
 
 ## Need Help?
 
