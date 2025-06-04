@@ -19,7 +19,11 @@ bunx commitizen init cz-conventional-changelog --save-dev --save-exact
 
 if [[ -d /workspace/.git ]]; then
   echo "Setting safe.directory for git..."
-  git config --global --add safe.directory /workspace || echo "git config safe.directory failed, but continuing..."
+  if ! git config --get-all safe.directory | grep -qx "/workspace"; then
+    git config --global --add safe.directory /workspace || echo "git config safe.directory failed, but continuing..."
+  else
+    echo "/workspace is already listed as a safe.directory."
+  fi
 else
   echo "No .git directory found in /workspace, skipping git safe.directory configuration."
 fi
