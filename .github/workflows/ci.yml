@@ -149,8 +149,33 @@ jobs:
           registry: ${{ env.REGISTRY }}
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
-      - name: Build and push Docker image (main)
-        if: github.ref == 'refs/heads/main'
+          
+      # Always build the image locally (but don't push yet)
+      - name: Build Docker image
+        if: github.event_name == 'pull_request' || github.ref == 'refs/heads/main'
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          file: ./Dockerfile
+          push: false
+          tags: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ env.VERSION }}
+
+      # Scan the locally built image before push
+      - name: Run Trivy scan
+        if: github.event_name == 'pull_request' || github.ref == 'refs/heads/main'
+        uses: aquasecurity/trivy-action@v0.31.0
+        with:
+          image-ref: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ env.VERSION }}
+          format: 'table'
+          exit-code: 1
+          severity: 'CRITICAL,HIGH'
+        # env:
+        #   TRIVY_SKIP_DB_UPDATE: true
+        #   TRIVY_SKIP_JAVA_DB_UPDATE: true
+
+      # Only push after successful scan AND only on main
+      - name: Push Docker image (main)
+        if: success() && github.ref == 'refs/heads/main'
         uses: docker/build-push-action@v5
         with:
           context: .
@@ -159,23 +184,6 @@ jobs:
           tags: |
             ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ env.VERSION }}
             ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest
-      - name: Build Docker image (PR)
-        if: github.event_name == 'pull_request'
-        uses: docker/build-push-action@v5
-        with:
-          context: .
-          file: ./Dockerfile
-          push: false
-          tags: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ env.VERSION }}
-      - name: Install Docker Scout CLI
-        if: github.event_name == 'pull_request' || github.ref == 'refs/heads/main'
-        run: |
-          curl -sSfL https://raw.githubusercontent.com/docker/scout-cli/main/install.sh | sh -s -- -b /usr/local/bin
-          /usr/local/bin/docker-scout version
-      - name: Scan Docker image
-        if: github.event_name == 'pull_request' || github.ref == 'refs/heads/main'
-        run: |
-          /usr/local/bin/docker-scout cves ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ env.VERSION }}
       - name: Set up Helm
         if: github.ref == 'refs/heads/main'
         uses: azure/setup-helm@v4
