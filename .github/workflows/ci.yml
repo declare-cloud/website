@@ -149,7 +149,7 @@ jobs:
           registry: ${{ env.REGISTRY }}
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
-          
+
       # Always build the image locally (but don't push yet)
       - name: Build Docker image
         if: github.event_name == 'pull_request' || github.ref == 'refs/heads/main'
