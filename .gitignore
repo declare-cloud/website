@@ -8,3 +8,6 @@ test-results
 .DS_Store
 *.local
 /node_modules
+package-lock.json
+yarn.lock
+pnpm-lock.yaml
