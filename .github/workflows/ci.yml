@@ -157,6 +157,7 @@ jobs:
         with:
           context: .
           file: ./Dockerfile
+          load: true  # we want the image to be available for trivy
           push: false
           tags: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ env.VERSION }}
 
