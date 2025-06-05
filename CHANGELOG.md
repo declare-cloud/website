@@ -1,13 +1,7 @@
 # Changelog
 
-All notable changes to this project will be documented in this file.
+All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
-## [0.0.1](https://github.com/declare-cloud/website/releases/tag/v0.0.1) (2025-05-30)
 
-✨ **Features**
-
-- Initial pre-release of the website project.
-- Next.js app scaffolded with Bun, Docker, Helm, and GitHub Actions CI/CD.
-- DevContainer setup for seamless onboarding and developer experience.
-
----
+### [0.0.1](https://github.com/declare-cloud/website/compare/v0.0.1) (2025-06-05)
+Initial check in

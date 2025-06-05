@@ -16,3 +16,5 @@ bun install
 bun next telemetry disable
 bun add next react react-dom
 bunx commitizen init cz-conventional-changelog --save-dev --save-exact
+git config --global --add safe.directory /workspace
+bunx husky init
