@@ -178,6 +178,17 @@ jobs:
       - name: Package Helm chart for EXTRA_TAG
         run: |
           cp chart/Chart.yaml chart/Chart.yaml.bak
+          sed -i "s/^version:.*/version: 0.0.0-${EXTRA_TAG}/" chart/Chart.yaml
+          sed -i "s/^appVersion:.*/appVersion: \"${VERSION}\"/" chart/Chart.yaml
+          helm package chart --destination chart-out
+          mv chart/Chart.yaml.bak chart/Chart.yaml
+        env:
+          VERSION: ${{ env.VERSION }}
+          EXTRA_TAG: ${{ github.event_name == 'pull_request' && format('pr-{0}', github.event.pull_request.number) || github.ref == 'refs/heads/main' && 'dev' || github.ref_type == 'tag' && github.ref_name }}
+
+      - name: Package Helm chart for EXTRA_TAG
+        run: |
+          cp chart/Chart.yaml chart/Chart.yaml.bak
           sed -i "s/^version:.*/version: ${EXTRA_TAG}/" chart/Chart.yaml
           sed -i "s/^appVersion:.*/appVersion: \"${VERSION}\"/" chart/Chart.yaml
           helm package chart --destination chart-out
