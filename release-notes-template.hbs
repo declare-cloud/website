@@ -1,0 +1,25 @@
+#
+{{nextRelease.version}}
+({{datetime 'YYYY-MM-DD'}})
+
+{{#if commitGroups.length}}
+  {{#each commitGroups}}
+    ##
+    {{title}}
+
+    {{#each commits}}
+      -
+      {{#if subject}}{{subject}}{{else}}{{header}}{{/if}}
+      ({{#if hash}}[{{shortHash}}]({{commitUrl}}){{/if}})
+    {{/each}}
+
+  {{/each}}
+{{/if}}
+
+{{#if notes.length}}
+  ### Notes
+  {{#each notes}}
+    -
+    {{text}}
+  {{/each}}
+{{/if}}
