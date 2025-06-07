@@ -1,7 +1,5 @@
 name: Cleanup Artifacts
 
-#description: Delete PR container images and Helm charts when branch is merged or deleted. Keep only the latest 5 main branch builds.
-
 on:
   delete:
   push:
@@ -23,27 +21,29 @@ jobs:
           script: |
             const prTagPrefix = `0.0.0-pr-`;
             const devTagPrefix = `dev-`;
-            const branchName = context.payload?.ref?.replace(/\//g, '-');
+            const branchName = context.payload?.ref?.replace(/^refs\/heads\//, '').replace(/\//g, '-');
 
-            const versions = await github.rest.packages.getAllPackageVersionsForPackageOwnedByUser({
+            const versions = await github.rest.packages.getAllPackageVersionsForPackageOwnedByOrg({
               package_type: 'container',
               package_name: 'website',
-              username: context.repo.owner
+              org: context.repo.owner
             });
 
             const mainBuilds = [];
 
             for (const v of versions.data) {
-              const tags = v.metadata.container.tags;
+              const tags = v.metadata.container.tags || [];
               const isTaggedRelease = tags.some(t => /^v\d+\.\d+\.\d+$/.test(t));
               const isMainDev = tags.some(t => t.startsWith(devTagPrefix));
-              const isPR = tags.some(t => t.includes(branchName) || t.startsWith(prTagPrefix));
+              const isPR = branchName
+                ? tags.some(t => t.includes(branchName) || t.startsWith(prTagPrefix))
+                : tags.some(t => t.startsWith(prTagPrefix));
 
               if (!isTaggedRelease && isPR) {
-                await github.rest.packages.deletePackageVersionForUser({
+                await github.rest.packages.deletePackageVersionForOrg({
                   package_type: 'container',
                   package_name: 'website',
-                  username: context.repo.owner,
+                  org: context.repo.owner,
                   package_version_id: v.id
                 });
               } else if (isMainDev) {
@@ -54,10 +54,10 @@ jobs:
             mainBuilds.sort((a, b) => new Date(b.updated_at) - new Date(a.updated_at));
             const oldMain = mainBuilds.slice(5);
             for (const v of oldMain) {
-              await github.rest.packages.deletePackageVersionForUser({
+              await github.rest.packages.deletePackageVersionForOrg({
                 package_type: 'container',
                 package_name: 'website',
-                username: context.repo.owner,
+                org: context.repo.owner,
                 package_version_id: v.id
               });
             }
@@ -76,27 +76,29 @@ jobs:
             const chartName = 'declare-cloud';
             const prTagPrefix = `0.0.0-pr-`;
             const devTagPrefix = `dev-`;
-            const branchName = context.payload?.ref?.replace(/\//g, '-');
+            const branchName = context.payload?.ref?.replace(/^refs\/heads\//, '').replace(/\//g, '-');
 
-            const charts = await github.rest.packages.getAllPackageVersionsForPackageOwnedByUser({
+            const charts = await github.rest.packages.getAllPackageVersionsForPackageOwnedByOrg({
               package_type: 'container',
               package_name: chartName,
-              username: context.repo.owner
+              org: context.repo.owner
             });
 
             const mainCharts = [];
 
             for (const chart of charts.data) {
-              const tags = chart.metadata.container.tags;
+              const tags = chart.metadata.container.tags || [];
               const isTaggedRelease = tags.some(t => /^v\d+\.\d+\.\d+$/.test(t));
               const isMainDev = tags.some(t => t.startsWith(devTagPrefix));
-              const isPR = tags.some(t => t.includes(branchName) || t.startsWith(prTagPrefix));
+              const isPR = branchName
+                ? tags.some(t => t.includes(branchName) || t.startsWith(prTagPrefix))
+                : tags.some(t => t.startsWith(prTagPrefix));
 
               if (!isTaggedRelease && isPR) {
-                await github.rest.packages.deletePackageVersionForUser({
+                await github.rest.packages.deletePackageVersionForOrg({
                   package_type: 'container',
                   package_name: chartName,
-                  username: context.repo.owner,
+                  org: context.repo.owner,
                   package_version_id: chart.id
                 });
               } else if (isMainDev) {
@@ -107,10 +109,10 @@ jobs:
             mainCharts.sort((a, b) => new Date(b.updated_at) - new Date(a.updated_at));
             const oldMainCharts = mainCharts.slice(5);
             for (const chart of oldMainCharts) {
-              await github.rest.packages.deletePackageVersionForUser({
+              await github.rest.packages.deletePackageVersionForOrg({
                 package_type: 'container',
                 package_name: chartName,
-                username: context.repo.owner,
+                org: context.repo.owner,
                 package_version_id: chart.id
               });
             }
