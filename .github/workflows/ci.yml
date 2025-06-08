@@ -112,22 +112,27 @@ jobs:
           if [[ "${{ github.event_name }}" == "pull_request" ]]; then
             PR_NUMBER="${{ github.event.pull_request.number }}"
             CONTAINER_TAG="pr-${PR_NUMBER}.${SHORT_SHA}"
-            HELM_VERSION="0.0.0+pr${PR_NUMBER}.${SHORT_SHA}"
-            HELM_EXTRA_VERSION="0.0.0+pr${PR_NUMBER}"
+            EXTRA_TAG="pr-${PR_NUMBER}"
+            HELM_VERSION="0.0.0-pr${PR_NUMBER}.${SHORT_SHA}"
+            HELM_EXTRA_VERSION="0.0.0-pr${PR_NUMBER}"
           elif [[ "${GITHUB_REF}" == refs/tags/v* ]]; then
             TAG_VERSION="${GITHUB_REF#refs/tags/v}"
             CONTAINER_TAG="${TAG_VERSION}"
+            EXTRA_TAG="latest"
             HELM_VERSION="${TAG_VERSION}"
             HELM_EXTRA_VERSION="${TAG_VERSION}"
           else
             CONTAINER_TAG="dev-${SHORT_SHA}"
-            HELM_VERSION="0.0.0+dev.${SHORT_SHA}"
-            HELM_EXTRA_VERSION="0.0.0+dev"
+            EXTRA_TAG="dev"
+            HELM_VERSION="0.0.0-dev.${SHORT_SHA}"
+            HELM_EXTRA_VERSION="0.0.0-dev"
           fi
 
           echo "CONTAINER_TAG=${CONTAINER_TAG}" >> $GITHUB_ENV
+          echo "EXTRA_TAG=${EXTRA_TAG}" >> $GITHUB_ENV
           echo "HELM_VERSION=${HELM_VERSION}" >> $GITHUB_ENV
           echo "HELM_EXTRA_VERSION=${HELM_EXTRA_VERSION}" >> $GITHUB_ENV
+
 
       - run: bun run build
 
