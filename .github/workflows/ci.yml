@@ -196,5 +196,5 @@ jobs:
       - name: Push Helm charts
         run: |
           for chart in chart-out/*.tgz; do
-            helm push "$chart" oci://${{ env.REGISTRY }}/declare-cloud
+            helm push "$chart" oci://${{ env.REGISTRY }}/declare-cloud/helm
           done
