@@ -133,7 +133,6 @@ jobs:
           echo "HELM_VERSION=${HELM_VERSION}" >> $GITHUB_ENV
           echo "HELM_EXTRA_VERSION=${HELM_EXTRA_VERSION}" >> $GITHUB_ENV
 
-
       - run: bun run build
 
       - uses: docker/setup-buildx-action@v3
