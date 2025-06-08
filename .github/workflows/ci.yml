@@ -154,6 +154,7 @@ jobs:
           exit-code: 1
           severity: 'CRITICAL,HIGH'
           ignore-unfixed: true
+          hide-progress: true
 
       - name: Push Docker image
         if: success()
