@@ -104,29 +104,30 @@ jobs:
 
       - run: bun install
 
-      - name: Determine Version
+      - name: Determine Versions
         id: get_version
         run: |
           SHORT_SHA=$(echo "${GITHUB_SHA}" | cut -c1-7)
 
           if [[ "${{ github.event_name }}" == "pull_request" ]]; then
             PR_NUMBER="${{ github.event.pull_request.number }}"
-            VERSION="0.0.0-pr-${PR_NUMBER}.${SHORT_SHA}"
-            EXTRA_TAG="pr-${PR_NUMBER}"
+            CONTAINER_TAG="pr-${PR_NUMBER}.${SHORT_SHA}"
+            HELM_VERSION="0.0.0+pr${PR_NUMBER}.${SHORT_SHA}"
+            HELM_EXTRA_VERSION="0.0.0+pr${PR_NUMBER}"
           elif [[ "${GITHUB_REF}" == refs/tags/v* ]]; then
-            VERSION="${GITHUB_REF#refs/tags/v}"
-            EXTRA_TAG="latest"
+            TAG_VERSION="${GITHUB_REF#refs/tags/v}"
+            CONTAINER_TAG="${TAG_VERSION}"
+            HELM_VERSION="${TAG_VERSION}"
+            HELM_EXTRA_VERSION="${TAG_VERSION}"
           else
-            VERSION="dev-${SHORT_SHA}"
-            EXTRA_TAG="latest-dev"
+            CONTAINER_TAG="dev-${SHORT_SHA}"
+            HELM_VERSION="0.0.0+dev.${SHORT_SHA}"
+            HELM_EXTRA_VERSION="0.0.0+dev"
           fi
 
-          echo "VERSION=${VERSION}" >> $GITHUB_ENV
-          echo "EXTRA_TAG=${EXTRA_TAG}" >> $GITHUB_ENV
-
-      - run: |
-          sed -i "s/^version:.*/version: ${VERSION}/" chart/Chart.yaml
-          sed -i "s/^appVersion:.*/appVersion: \"${VERSION}\"/" chart/Chart.yaml
+          echo "CONTAINER_TAG=${CONTAINER_TAG}" >> $GITHUB_ENV
+          echo "HELM_VERSION=${HELM_VERSION}" >> $GITHUB_ENV
+          echo "HELM_EXTRA_VERSION=${HELM_EXTRA_VERSION}" >> $GITHUB_ENV
 
       - run: bun run build
 
@@ -145,11 +146,11 @@ jobs:
           load: true
           push: false
           tags: |
-            ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ env.VERSION }}
+            ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ env.CONTAINER_TAG }}
 
       - uses: aquasecurity/trivy-action@master
         with:
-          image-ref: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ env.VERSION }}
+          image-ref: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ env.CONTAINER_TAG }}
           format: 'table'
           exit-code: 1
           severity: 'CRITICAL,HIGH'
@@ -164,29 +165,26 @@ jobs:
           file: ./Dockerfile
           push: true
           tags: |
-            ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ env.VERSION }}
-            ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ env.EXTRA_TAG }}
+            ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ env.CONTAINER_TAG }}
+            ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ env.HELM_EXTRA_VERSION }}
 
       - uses: azure/setup-helm@v4
 
-      - name: Package Helm chart for VERSION
+      - name: Package Helm chart for main version
         run: |
           cp chart/Chart.yaml chart/Chart.yaml.bak
-          sed -i "s/^version:.*/version: ${VERSION}/" chart/Chart.yaml
-          sed -i "s/^appVersion:.*/appVersion: \"${VERSION}\"/" chart/Chart.yaml
+          sed -i "s/^version:.*/version: ${HELM_VERSION}/" chart/Chart.yaml
+          sed -i "s/^appVersion:.*/appVersion: \"${CONTAINER_TAG}\"/" chart/Chart.yaml
           helm package chart --destination chart-out
           mv chart/Chart.yaml.bak chart/Chart.yaml
 
-      - name: Package Helm chart for EXTRA_TAG
+      - name: Package Helm chart for extra/dev tag
         run: |
           cp chart/Chart.yaml chart/Chart.yaml.bak
-          sed -i "s/^version:.*/version: 0.0.0-${EXTRA_TAG}/" chart/Chart.yaml
-          sed -i "s/^appVersion:.*/appVersion: \"${VERSION}\"/" chart/Chart.yaml
+          sed -i "s/^version:.*/version: ${HELM_EXTRA_VERSION}/" chart/Chart.yaml
+          sed -i "s/^appVersion:.*/appVersion: \"${CONTAINER_TAG}\"/" chart/Chart.yaml
           helm package chart --destination chart-out
           mv chart/Chart.yaml.bak chart/Chart.yaml
-        env:
-          VERSION: ${{ env.VERSION }}
-          EXTRA_TAG: ${{ github.event_name == 'pull_request' && format('pr-{0}', github.event.pull_request.number) || github.ref == 'refs/heads/main' && 'dev' || github.ref_type == 'tag' && github.ref_name }}
 
       - run: |
           echo "${{ secrets.GITHUB_TOKEN }}" | helm registry login ${{ env.REGISTRY }} --username ${{ github.actor }} --password-stdin
