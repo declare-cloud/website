@@ -107,8 +107,8 @@ const currentBranch =
 
 const branches = isDryRun ? [currentBranch] : ['main'];
 
-console.log('isDryRun:', isDryRun);
-console.log('branches:', branches);
+//console.log('isDryRun:', isDryRun);
+//console.log('branches:', branches);
 
 // Base Plugins (always included)
 const basePlugins = [
@@ -209,8 +209,8 @@ const basePlugins = [
           }
 
           // (Optional) Attach the raw JSON for debugging
-          result._rawJson = JSON.stringify(commit, null, 2);
-          result._rawJson2 = JSON.stringify(result, null, 2);
+          //result._rawJson = JSON.stringify(commit, null, 2);
+          //result._rawJson2 = JSON.stringify(result, null, 2);
 
           return result;
         },

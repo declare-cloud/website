@@ -1,7 +1,7 @@
 {
   "name": "website",
   "type": "module",
-  "version": "1.1.0",
+  "version": "0.0.1",
   "engines": {
     "bun": ">=1.1.0"
   },
@@ -19,7 +19,7 @@
     "test:coverage": "jest --coverage",
     "test:e2e": "playwright test",
     "commit": "cz",
-    "release": "semantic-release --dry-run --no-ci --extends ./release.config.js",
+    "release": "semantic-release --dry-run --no-ci",
     "lint": "eslint . --ext .ts,.tsx --fix",
     "lint:check": "eslint . --ext .ts,.tsx",
     "format": "prettier --write .",
