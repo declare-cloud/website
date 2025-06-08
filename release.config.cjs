@@ -251,6 +251,7 @@ const basePlugins = [
 const releasePlugins = [
   ...(process.env.CI && process.env.GITHUB_TOKEN
     ? [
+        '@semantic-release/changelog',
         '@semantic-release/npm',
         [
           '@semantic-release/git',
