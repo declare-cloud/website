@@ -66,9 +66,11 @@ jobs:
           helm plugin install https://github.com/databus23/helm-diff || true
 
       - name: Install GitHub CLI
-        uses: cli/cli-action@v2
+        uses: cli/gh-action@v2
 
       - name: Determine chart version
+        env:
+            GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         id: chart
         run: |
           if [ -n "${{ github.event.inputs.chart_version }}" ]; then
