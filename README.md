@@ -219,3 +219,112 @@ Always use `bunx cz` to help format your commit messages!
 Open an issue or ask in Discussions.
 
 ---
+
+
+# 🚀 GitHub Deployment Workflow Setup
+
+This guide describes how to configure GitHub for the `Deploy Website` workflow, which deploys Helm charts to your Kubernetes environments using GitHub Actions.
+
+---
+
+## 📁 1. Create Environments
+
+Go to your repository’s **Settings → Environments**, then:
+
+1. Click **"New environment"**
+2. Create the following environments **exactly** with these names:
+   - `dev`
+   - `staging`
+   - `production`
+
+These environments will control secrets, approvals, and visibility for each deployment stage.
+
+---
+
+## 🔐 2. Add Secrets
+
+Each environment must include a secret that allows the workflow to authenticate to [GitHub Container Registry (GHCR)](https://ghcr.io) to pull Helm charts.
+
+---
+
+### 🔑 Recommended Secrets Per Environment
+
+Note: `GHCR_PASSWORD` is just an example of how to setup a secret, there is no need to set it up.
+
+| Name           | Environment  | Example Value                                 | Purpose                                                            |
+|----------------|--------------|-----------------------------------------------|--------------------------------------------------------------------|
+| `GHCR_PASSWORD`| `dev`        | PAT with `read:packages`                      | Use GitHub’s built-in token for public or same-org GHCR access    |
+| `GHCR_PASSWORD`| `staging`    | PAT with `read:packages`                      | Required for private or cross-org GHCR access                     |
+| `GHCR_PASSWORD`| `production` | PAT with `read:packages`                      | Use a dedicated, scoped PAT for security and auditability         |
+
+> ✅ Use the same **secret name** (`GHCR_PASSWORD`) in all environments.
+
+---
+
+### 🛠️ To Add a Secret:
+1. Go to your **GitHub repository**
+2. Navigate to: **Settings → Environments → [dev / staging / production]**
+3. Click **"Add secret"**
+4. Set:
+   - **Name:** `GHCR_PASSWORD`
+   - **Value:** Use the example value for the respective environment above
+
+---
+
+### 🔐 How to Create a Personal Access Token (PAT):
+
+1. Visit [https://github.com/settings/tokens](https://github.com/settings/tokens)
+2. Click **"Generate new token (classic)"**
+3. Set an **expiration date**
+4. Select scopes:
+   - ✅ `read:packages`
+   - ✅ `repo` (only if GHCR or repo is private)
+5. Copy the token and paste it into the appropriate GitHub Environment as `GHCR_PASSWORD`
+
+> ⚠️ Once saved in GitHub Secrets, the token is encrypted and only visible to workflows with access to that environment.
+
+## ⚙️ 3. Add Environment Variables (Optional)
+
+You can define per-environment Helm arguments using environment variables to control upgrade behavior.
+
+### Optional Variable:
+
+| Name              | Environment | Example Value                   | Purpose                                      |
+|-------------------|-------------|----------------------------------|----------------------------------------------|
+| `HELM_EXTRA_ARGS` | `dev`       | `--atomic --wait`               | Ensure rollout finishes and fails safely     |
+| `HELM_EXTRA_ARGS` | `staging`   | `--atomic --wait --timeout 5m`  | Wait up to 5 mins, rollback on failure       |
+| `HELM_EXTRA_ARGS` | `production`| `--atomic --wait --timeout 10m` | Longer wait for production rollout stability |
+
+### To add:
+
+1. Go to **Settings → Environments → [dev/staging/production]**
+2. Click **"Add variable"**
+3. Set:
+   - **Name:** `HELM_EXTRA_ARGS`
+   - **Value:** (see table above for environment-specific recommendation)
+
+> These args are passed directly to `helm upgrade`, allowing environment-specific behavior.
+
+
+---
+
+## ✅ 4. Require Manual Approvals (Optional but Recommended)
+
+To enforce a manual approval before deploying:
+
+1. Go to **Settings → Environments → [staging / production]**
+2. Under **"Deployment protection rules"**, enable:
+   - ✅ **"Required reviewers before deployment"**
+3. Select the appropriate team or users
+
+This causes GitHub Actions to **pause before deployment** until someone approves it in the UI.
+
+---
+
+## ⏱️ 5. Deployment Timeout
+
+The workflow includes a 2-hour timeout using this setting:
+
+```yaml
+timeout-minutes: 120
+```
