@@ -1,0 +1,37 @@
+{
+  "name": "Next.js Dev Container",
+  "dockerComposeFile": "docker-compose.yml",
+  "service": "app",
+  "features": {
+    "ghcr.io/devcontainers/features/docker-in-docker:2": {},
+    "ghcr.io/dhoeric/features/hadolint:1": {}
+  },
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "ms-azuretools.vscode-docker",
+        "vivaxy.vscode-conventional-commits",
+        "exiasr.hadolint",
+        "ms-azuretools.vscode-docker",
+        "redhat.vscode-yaml",
+        "shardulm94.trailing-spaces",
+        "tamasfe.even-better-toml",
+        "yzhang.markdown-all-in-one",
+        "ms-vscode.vscode-typescript-next",
+        "dbaeumer.vscode-eslint",
+        "esbenp.prettier-vscode",
+        "streetsidesoftware.code-spell-checker"
+      ],
+      // Suppress the dev container notification
+      "settings": {
+        "dev.containers.showWelcomeNotification": false
+      }
+    }
+  },
+  "initializeCommand": "bash .devcontainer/initialize-command.sh -w '${localWorkspaceFolder}'",
+  "postCreateCommand": "bash .devcontainer/post-create.sh -w '${localWorkspaceFolder}'",
+  "postStartCommand": "bash .devcontainer/post-start.sh -w '${localWorkspaceFolder}'",
+  "workspaceFolder": "/workspace", // Set to where your code mounts
+  "remoteUser": "node",
+  "forwardPorts": [3000]
+}

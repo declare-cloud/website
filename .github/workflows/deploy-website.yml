@@ -1,0 +1,233 @@
+name: Deploy Website
+
+on:
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: 'Target environment'
+        required: true
+        default: staging
+        type: choice
+        options:
+          - dev
+          - staging
+          - production
+      chart_version:
+        description: 'Helm chart version (optional)'
+        required: false
+      runner:
+        description: 'Runner label'
+        required: true
+        default: default-runners
+        type: choice
+        options:
+          - default-runners
+
+  workflow_run:
+    workflows: ['CI/CD']
+    branches:
+      - main
+      - 'v*'
+    types:
+      - completed
+
+jobs:
+  preview:
+    name: Helm Diff Preview
+    if: |
+      (github.event_name == 'workflow_run' && github.event.workflow_run.conclusion == 'success') ||
+      (github.event_name == 'workflow_dispatch')
+    runs-on: ${{ github.event.inputs.runner || 'default-runners' }}
+    env:
+      RELEASE_NAME: website
+      CHART_REF: ghcr.io/declare-cloud/helm/website
+      DEFAULT_STAGING_CHART_VERSION: 0.0.0-dev
+
+    outputs:
+      chart_version: ${{ steps.params.outputs.chart_version }}
+      environment: ${{ steps.params.outputs.environment }}
+      runner_label: ${{ steps.params.outputs.runner_label }}
+      namespace: ${{ steps.params.outputs.namespace }}
+
+    steps:
+      - name: Checkout source
+        uses: actions/checkout@v4
+
+      - name: Set up Helm
+        uses: azure/setup-helm@v3
+        with:
+          version: v3.14.0
+
+      - name: Set up kubectl
+        uses: azure/setup-kubectl@v3
+        with:
+          version: v1.29.0
+
+      - name: Install Helm Diff plugin
+        run: |
+          helm plugin install https://github.com/databus23/helm-diff || true
+
+      - name: Determine dynamic parameters
+        id: params
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          # 1. Determine Environment
+          if [ "${{ github.event_name }}" == "workflow_dispatch" ]; then
+            ENVIRONMENT="${{ github.event.inputs.environment }}"
+          elif [ "${{ github.event_name }}" == "workflow_run" ]; then
+            ref_name="${{ github.event.workflow_run.head_branch }}"
+            if [[ "$ref_name" == "master" || "$ref_name" == "main" ]]; then
+              ENVIRONMENT="staging"
+            elif [[ "$ref_name" == v* ]]; then
+              ENVIRONMENT="production"
+            else
+              echo "::error::Unsupported branch for workflow_run trigger: $ref_name"
+              exit 1
+            fi
+          else
+            echo "::error::Unsupported event type: ${{ github.event_name }}"
+            exit 1
+          fi
+          echo "environment=$ENVIRONMENT" >> $GITHUB_OUTPUT
+          echo "Determined environment: $ENVIRONMENT"
+
+          NAMESPACE="${ENVIRONMENT}-website"
+          echo "namespace=$NAMESPACE" >> $GITHUB_OUTPUT
+          echo "Determined namespace: $NAMESPACE"
+
+          # 2. Determine Runner Label
+          RUNNER_LABEL="${{ github.event.inputs.runner || 'default-runners' }}"
+          echo "runner_label=$RUNNER_LABEL" >> $GITHUB_OUTPUT
+          echo "Determined runner label: $RUNNER_LABEL"
+
+          # 3. Determine Chart Version
+          CHART_VERSION=""
+          if [ -n "${{ github.event.inputs.chart_version }}" ]; then
+            CHART_VERSION="${{ github.event.inputs.chart_version }}"
+          elif [ "$ENVIRONMENT" == "staging" ]; then
+            CHART_VERSION="${{ env.DEFAULT_STAGING_CHART_VERSION }}"
+          elif [ "$ENVIRONMENT" == "dev" ]; then
+            pr_number=$(gh pr list --state merged --base main --limit 1 --json number -q '.[0].number' || echo "")
+            if [ -n "$pr_number" ]; then
+                CHART_VERSION="0.0.0-pr${pr_number}"
+            fi
+          else # Production
+            PACKAGE_NAME="${CHART_REF#ghcr.io/${{ github.repository_owner }}/}"
+            API_URL="https://api.github.com/orgs/${{ github.repository_owner }}/packages/container/${PACKAGE_NAME//\//%2F}/versions"
+            versions_json=$(curl --fail -s -L \
+              -H "Accept: application/vnd.github+json" \
+              -H "Authorization: Bearer $GH_TOKEN" \
+              -H "X-GitHub-Api-Version: 2022-11-28" \
+              "$API_URL")
+            if [ $? -eq 0 ]; then
+                parsed_tags=$(echo "$versions_json" | jq -r '.[].metadata.container.tags[]?')
+                latest=$(echo "$parsed_tags" | grep -E '^[0-9]+\.[0-9]+\.[0-9]+$' | sort -Vr | head -n1)
+                CHART_VERSION="$latest"
+            else
+                echo "⚠️ curl command failed when trying to fetch tags. Check repository permissions and URL."
+            fi
+          fi
+
+          # 4. Validate and Set Output
+          if [ -z "$CHART_VERSION" ]; then
+            echo "::error::Could not determine a valid chart version. Aborting."
+            exit 1
+          fi
+          echo "Determined chart version: $CHART_VERSION"
+          echo "chart_version=$CHART_VERSION" >> $GITHUB_OUTPUT
+
+      - name: Log in to GHCR (Helm OCI)
+        run: |
+          echo "${{ secrets.GITHUB_TOKEN }}" | helm registry login ghcr.io --username declare-cloud --password-stdin
+
+      - name: Show Helm diff
+        env:
+          CUSTOM_VALUES: ${{ vars.HELM_VALUES }}
+          NAMESPACE: ${{ steps.params.outputs.namespace }}
+        run: |
+          HELM_ARGS=()
+          VALUES_FILE=""
+          if [[ -n "$CUSTOM_VALUES" ]]; then
+            echo "Custom values found. Writing to a temporary file."
+            VALUES_FILE=$(mktemp)
+            echo "$CUSTOM_VALUES" > "$VALUES_FILE"
+            HELM_ARGS+=("-f" "$VALUES_FILE")
+          else
+            echo "No custom values secret found. Proceeding with default chart values."
+          fi
+
+          helm diff upgrade "$RELEASE_NAME" "oci://$CHART_REF" \
+            --namespace "$NAMESPACE" \
+            --allow-unreleased \
+            --suppress-secrets \
+            --version "${{ steps.params.outputs.chart_version }}" \
+            "${HELM_ARGS[@]}" \
+            ${{ vars.HELM_EXTRA_ARGS }}
+
+          if [[ -n "$VALUES_FILE" ]]; then
+            rm -f "$VALUES_FILE"
+          fi
+
+  deploy:
+    name: Deploy with Approval
+    needs: preview
+    if: |
+      (github.event_name == 'workflow_run' && github.event.workflow_run.conclusion == 'success') ||
+      (github.event_name == 'workflow_dispatch')
+    runs-on: ${{ needs.preview.outputs.runner_label }}
+    timeout-minutes: 120
+    environment:
+      name: ${{ needs.preview.outputs.environment }}
+      url: https://github.com/${{ github.repository }}/deployments
+    env:
+      RELEASE_NAME: website
+      NAMESPACE: ${{ needs.preview.outputs.namespace }}
+      CHART_REF: ghcr.io/declare-cloud/helm/website
+
+    steps:
+      - name: Set up Helm
+        uses: azure/setup-helm@v3
+        with:
+          version: v3.14.0
+
+      - name: Log in to GHCR (Helm OCI)
+        run: |
+          echo "${{ secrets.GITHUB_TOKEN }}" | helm registry login ghcr.io --username declare-cloud --password-stdin
+
+      - name: Deploy Helm chart from GHCR
+        id: helm_deploy
+        continue-on-error: true
+        env:
+          CUSTOM_VALUES: ${{ vars.HELM_VALUES }}
+        run: |
+          HELM_ARGS=()
+          VALUES_FILE=""
+          if [[ -n "$CUSTOM_VALUES" ]]; then
+            echo "Custom values found. Writing to temporary file for deployment."
+            VALUES_FILE=$(mktemp)
+            echo "$CUSTOM_VALUES" > "$VALUES_FILE"
+            HELM_ARGS+=("-f" "$VALUES_FILE")
+          else
+            echo "No custom values secret found. Deploying with default chart values."
+          fi
+
+          echo "Starting Helm upgrade..."
+          helm upgrade --install "$RELEASE_NAME" "oci://$CHART_REF" \
+            --namespace "$NAMESPACE" \
+            --atomic \
+            --version "${{ needs.preview.outputs.chart_version }}" \
+            "${HELM_ARGS[@]}" \
+            ${{ vars.HELM_EXTRA_ARGS }}
+
+          if [[ -n "$VALUES_FILE" ]]; then
+            rm -f "$VALUES_FILE"
+          fi
+
+      - name: Rollback on Helm failure (only for staging/production)
+        if: |
+          steps.helm_deploy.outcome == 'failure' &&
+          (needs.preview.outputs.environment == 'staging' || needs.preview.outputs.environment == 'production')
+        run: |
+          echo "⚠️ Helm upgrade failed for ${{ needs.preview.outputs.environment }}. Attempting rollback..."
+          helm rollback "$RELEASE_NAME" --namespace "$NAMESPACE" || echo "⚠️ Rollback failed or not applicable."

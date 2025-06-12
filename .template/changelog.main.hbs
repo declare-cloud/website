@@ -1,0 +1,25 @@
+{{> headerPartial}}
+
+## {{version}} ({{date}})
+
+[🆚 Compare changes](https://github.com/declare-cloud/website/compare/{{previousTag}}...{{gitTag}})
+[🏷️ View this release on GitHub](https://github.com/declare-cloud/website/releases/tag/{{gitTag}})
+
+{{#if noteGroups.length}}
+---
+{{> noteGroupsPartial}}
+---
+
+{{/if}}
+{{#if commitGroups.length}}
+{{#each commitGroups}}
+###{{#if icon}} {{icon}}{{/if}}{{#if title}} {{title}}{{/if}}
+
+{{#each commits}}
+{{> commitPartial}}
+{{/each}}
+{{/each}}
+{{else}}
+_No relevant user-facing changes in this release._
+{{/if}}
+{{> footerPartial}}
